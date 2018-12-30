@@ -1,25 +1,41 @@
 import pickle
 import logging
 
-from app import screen as s
+from app.screen import Screen
 
 
-def test_positive_attrs():
+with open('tests/test-dupe-1.pkl', 'rb') as f:
+    image = pickle.load(f)
 
-    screen: s.Screen = s.Screen()
+s = Screen()
 
-    with open('tests/dupe.pkl', 'rb') as f:
-        img = pickle.load(f)
 
-    attrs = screen.get_positive_attributes(img)
+def test_attributes():
+    """ Test if screen can read attributes properly. """
 
-    assert attrs == {'tinkering': 5, 'strength': 3}
+    attributes = s.get_attributes(image)
 
-    with open('tests/dupe2.pkl', 'rb') as f: 
-        img = pickle.load(f)
+    correct_attributes = {'athletics': 1,
+                          'digging': 3, 'creativity': 8, 'farming': 2}
 
-    attrs = screen.get_positive_attributes(img)
+    assert attributes == correct_attributes
 
-    assert attrs == {'kindness': 5, 'ranching': 4, 'creativity': 3}
 
-    
+def test_traits():
+    """ Test if screen can read traits properly. """
+
+    traits = s.get_traits(image)
+
+    correct_traits = {'positive': ['interior decorator'], 'negative': ['squeamish']}
+
+    assert traits == correct_traits
+
+
+def test_interests(): 
+    """ Test if screen can read interests properly. """
+
+    interests = s.get_interests(image)
+
+    correct_interests = ['dig']
+
+    assert interests == correct_interests
