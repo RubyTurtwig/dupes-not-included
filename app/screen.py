@@ -99,11 +99,11 @@ class Screen:
         }
         
         time.sleep(5)  # Time to tab out to ONI.
-
+        
         self.frame = self.take_screenshot()
 
-        self.boxes = self.get_duplicant_box()
-        self.shuffle_buttons = self.get_shuffle_buttons()
+        self.boxes = None
+        self.shuffle_buttons = None
 
         self.dupe = 0
 
@@ -397,6 +397,9 @@ class Screen:
 
         match = False
 
+        self.boxes = self.get_duplicant_box()
+        self.shuffle_buttons = self.get_shuffle_buttons()
+
         dupes = 0
         start = time.time()
 
@@ -432,6 +435,7 @@ if __name__ == "__main__":
 
     s = Screen()
     time.sleep(5)
-    # ss = s.take_screenshot_dupe(1)
+    ss = s.take_screenshot_dupe(0)
+    
     # print(s.get_interests(ss))
-    s.run(0, config)
+    # s.run(0, config)
