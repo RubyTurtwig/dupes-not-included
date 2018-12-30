@@ -6,5 +6,6 @@ I'm just a beginner at this so this script probably contains loads of bugs, does
 There's plenty left to do with this project as well: 
 1. Extend its functionality to other resolutions. 
 2. Optimizing the script so that it can shuffle through duplicants at a faster rate. 
-3. Add ability to build a comparison dictionary. 
-4. Add duplicant templates. 
+3. Add ability to parse more than one duplicant at once. 
+4. Add ability to build a comparison dictionary. 
+5. Add duplicant templates. 
