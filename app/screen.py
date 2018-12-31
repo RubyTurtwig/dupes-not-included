@@ -3,6 +3,7 @@ import operator
 import os
 import pickle
 import time
+import json
 
 import mss
 import numpy as np
@@ -392,8 +393,28 @@ class Screen:
 
         return True
 
-    def run(self, dupe, config: dict):
-        """ Run program with config. """
+    def load_config(self, name): 
+        """ Return duplicant configuration from file name. """ 
+
+        DIR = 'duplicants/'
+        filename = os.path.join(DIR, name + '.json')
+
+        operators = {'>': operator.gt, '<': operator.lt, '>=': operator.ge, '<=': operator.le, '=':operator.eq}
+
+        with open(filename, 'r') as f: 
+            config = json.load(f)
+        
+        for attribute, (op, value) in config['attributes'].items(): 
+
+            config['attributes'][attribute] = (operators[op], value)
+        
+        return config
+
+
+    def run(self, dupe, config: str):
+        """ Run program with config. Takes in a template name as config. """
+
+        config = self.load_config(config)
 
         match = False
 

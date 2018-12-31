@@ -12,7 +12,4 @@ duplicant_number = 0
 # negative: [negative traits to exclude], 
 # interests: [interests that duplicant must have]}
 
-config = {'attributes': {'learning': (operator.gt, 2)}, 'positive': [], 'negative': [
-    'slow learner', 'noodle arms', 'loud sleeper', 'narcoleptic'], 'interests': ['research']}
-
-screen.run(0, config)
+screen.run(0, 'example')

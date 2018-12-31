@@ -1,5 +1,6 @@
 import pickle
 import logging
+import operator
 
 from app.screen import Screen
 
@@ -39,3 +40,12 @@ def test_interests():
     correct_interests = ['dig']
 
     assert interests == correct_interests
+
+
+def test_load_config(): 
+    """ Test if config file is being read properly. """
+
+    config = s.load_config('research')
+
+    assert config == {'attributes': {'learning': (operator.gt, 2)}, 'positive': [], 'negative': [
+    'slow learner', 'noodle arms', 'loud sleeper', 'narcoleptic'], 'interests': ['research']}
