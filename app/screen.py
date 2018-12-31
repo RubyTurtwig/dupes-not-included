@@ -395,13 +395,15 @@ class Screen:
 
     def load_config(self, name): 
         """ Return duplicant configuration from file name. """ 
+        
+        if not name.endswith('.json'):  # GUI should return full file path. 
 
-        DIR = 'duplicants/'
-        filename = os.path.join(DIR, name + '.json')
+            DIR = 'duplicants/'
+            name = os.path.join(DIR, name + '.json')
 
         operators = {'>': operator.gt, '<': operator.lt, '>=': operator.ge, '<=': operator.le, '=':operator.eq}
 
-        with open(filename, 'r') as f: 
+        with open(name, 'r') as f: 
             config = json.load(f)
         
         for attribute, (op, value) in config['attributes'].items(): 
@@ -435,7 +437,7 @@ class Screen:
                 break
 
             else:
-                self.click_shuffle_button(self.dupe)
+                self.click_shuffle_button(dupe)
                 dupes += 1
 
         self.dupe += 1  

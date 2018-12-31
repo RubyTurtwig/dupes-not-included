@@ -1,10 +1,7 @@
 import operator
 
-from app.screen import Screen
+import app.gui
 
-screen = Screen()
-
-duplicant_number = 0
 
 # Config file in the following format: 
 # {attributes: {attribute: (operator, number)}, 
@@ -12,4 +9,4 @@ duplicant_number = 0
 # negative: [negative traits to exclude], 
 # interests: [interests that duplicant must have]}
 
-screen.run(0, 'example')
+app.gui.run_gui()
