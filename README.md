@@ -1,6 +1,16 @@
 # dupes-not-included
 Shuffle duplicants until it finds one that meets a specified criteria!
 
+1/1/19: I added simple GUI control. 
+
+# How to Use:
+1. Download python 3.  
+2. Create a .json file with the configuration of the duplicant you want to find, and save it in the duplicants folder. The json file must be in the format shown below.
+3. Open the ONI duplicant selection screen. 
+4. Run main.py with python.
+5. Select the json file created in 2, and then click the duplicant number to shuffle. 
+6. Click run, and immediately tab out to ONI. The program should start shuffling in a few seconds. 
+
 I'm just a beginner at this so this script probably contains loads of bugs, doesn't work for any other resolution than 1080p and breaks a whole load of programming practices. Also, it's pretty slow at shuffling duplicants, so try not to put in too specific a criteria. 
 
 There's plenty left to do with this project as well: 
