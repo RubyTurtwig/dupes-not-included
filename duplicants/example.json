@@ -1,0 +1,17 @@
+{
+    "attributes": {
+        "learning": [">", 
+            2
+        ]
+    },
+    "positive": [],
+    "negative": [
+        "slow learner",
+        "noodle arms",
+        "loud sleeper",
+        "narcoleptic"
+    ],
+    "interests": [
+        "research"
+    ]
+}
