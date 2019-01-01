@@ -58,36 +58,38 @@ class Screen:
             'strength': cv2.imread(f'{DIR}attributes/strength_positive.png', 0),
             'tinkering': cv2.imread(f'{DIR}attributes/tinkering_positive.png', 0)
         }
-        self.trait_templates = {
-            'anemic': cv2.imread(f'{DIR}traits/anemic.png', 0),
-            'biohazardous': cv2.imread(f'{DIR}traits/biohazardous.png', 0),
-            'bottomless stomach': cv2.imread(f'{DIR}traits/bottomless_stomach.png', 0),
+        self.positive_trait_templates = {
             'buff': cv2.imread(f'{DIR}traits/buff.png', 0),
             'caregiver': cv2.imread(f'{DIR}traits/caregiver.png', 0),
             "diver's lungs": cv2.imread(f'{DIR}traits/divers_lungs.png', 0),
             'early bird': cv2.imread(f'{DIR}traits/early_bird.png', 0),
-            'flatulent': cv2.imread(f'{DIR}traits/flatulent.png', 0),
-            'gastrophobia': cv2.imread(f'{DIR}traits/gastrophobia.png', 0),
             'germ resistant': cv2.imread(f'{DIR}traits/germ_resistant.png', 0),
             'gourmet': cv2.imread(f'{DIR}traits/gourmet.png', 0),
             'grease monkey': cv2.imread(f'{DIR}traits/grease_monkey.png', 0),
             'interior decorator': cv2.imread(f'{DIR}traits/interior_decorator.png', 0),
             'iron gut': cv2.imread(f'{DIR}traits/iron_gut.png', 0),
-            'irritable bowel': cv2.imread(f'{DIR}traits/irritable_bowel.png', 0),
-            'loud sleeper': cv2.imread(f'{DIR}traits/loud_sleeper.png', 0),
             'mole hands': cv2.imread(f'{DIR}traits/mole_hands.png', 0),
-            'mouth breather': cv2.imread(f'{DIR}traits/mouth_breather.png', 0),
-            'narcoleptic': cv2.imread(f'{DIR}traits/narcoleptic.png', 0),
             'night owl': cv2.imread(f'{DIR}traits/night_owl.png', 0),
-            'noodle arms': cv2.imread(f'{DIR}traits/noodle_arms.png', 0),
-            'pacifist': cv2.imread(f'{DIR}traits/pacifist.png', 0),
             'quick learner': cv2.imread(f'{DIR}traits/quick_learner.png', 0),
             'simple tastes': cv2.imread(f'{DIR}traits/simple_tastes.png', 0),
+            'twinkletoes': cv2.imread(f'{DIR}traits/twinkletoes.png', 0),
+            'uncultured': cv2.imread(f'{DIR}traits/uncultured.png', 0)
+        }
+        self.negative_trait_templates = {
+            'anemic': cv2.imread(f'{DIR}traits/anemic.png', 0),
+            'biohazardous': cv2.imread(f'{DIR}traits/biohazardous.png', 0),
+            'bottomless stomach': cv2.imread(f'{DIR}traits/bottomless_stomach.png', 0),
+            'flatulent': cv2.imread(f'{DIR}traits/flatulent.png', 0),
+            'gastrophobia': cv2.imread(f'{DIR}traits/gastrophobia.png', 0),
+            'irritable bowel': cv2.imread(f'{DIR}traits/irritable_bowel.png', 0),
+            'loud sleeper': cv2.imread(f'{DIR}traits/loud_sleeper.png', 0),
+            'mouth breather': cv2.imread(f'{DIR}traits/mouth_breather.png', 0),
+            'narcoleptic': cv2.imread(f'{DIR}traits/narcoleptic.png', 0),
+            'noodle arms': cv2.imread(f'{DIR}traits/noodle_arms.png', 0),
+            'pacifist': cv2.imread(f'{DIR}traits/pacifist.png', 0),
             'slow learner': cv2.imread(f'{DIR}traits/slow_learner.png', 0),
             'small bladder': cv2.imread(f'{DIR}traits/small_bladder.png', 0),
             'squeamish': cv2.imread(f'{DIR}traits/squeamish.png', 0),
-            'twinkletoes': cv2.imread(f'{DIR}traits/twinkletoes.png', 0),
-            'uncultured': cv2.imread(f'{DIR}traits/uncultured.png', 0),
             'yokel': cv2.imread(f'{DIR}traits/yokel.png', 0)
         }
         self.interest_templates = {
@@ -214,16 +216,16 @@ class Screen:
         # tinkering: (157, 185)
 
         attribute_coords = {
-            (3, 6): 'athletics', 
+            (3, 6): 'athletics',
             (6, 6): 'construction',
-            (3, 7): 'cooking', 
-            (6, 7): 'creativity', 
-            (3, 8): 'digging', 
-            (6, 8): 'farming', 
-            (3, 10): 'kindness', 
-            (6, 10): 'learning', 
-            (3, 11): 'ranching', 
-            (6, 11): 'strength', 
+            (3, 7): 'cooking',
+            (6, 7): 'creativity',
+            (3, 8): 'digging',
+            (6, 8): 'farming',
+            (3, 10): 'kindness',
+            (6, 10): 'learning',
+            (3, 11): 'ranching',
+            (6, 11): 'strength',
             (3, 12): 'tinkering'
         }
 
@@ -268,21 +270,25 @@ class Screen:
     def get_traits(self, image: np.array):
         """ Get positive and negative traits from image. """
 
-        traits = {'positive': [], 'negative': []}
+        traits = {}
 
-        for trait, template in self.trait_templates.items():
+        for trait, template in self.positive_trait_templates.items():
 
             matches = self.find_image(image, template, threshold=0.9)
 
             if len(matches) == 1:
+                traits['positive'] = [trait]
+                break  # Duplicant can only have one positive trait.
+            elif len(matches) >= 1:
+                raise NotImplementedError(f'More than one of {trait} found.')
+        
+        for trait, template in self.negative_trait_templates.items():
 
-                if trait in {'buff', 'caregiver', "diver's lungs", 'early bird', 'germ resistant',
-                             'gourmet', 'grease monkey', 'interior decorator', 'iron gut', 'mole hands',
-                             'night owl', 'quick learner', 'simple tastes', 'twinkletoes', 'uncultured'}:
-                    traits['positive'].append(trait)
-                else:
-                    traits['negative'].append(trait)
+            matches = self.find_image(image, template, threshold=0.9)
 
+            if len(matches) == 1:
+                traits['negative'] = [trait]
+                break  # Duplicant can only have one negative trait.
             elif len(matches) >= 1:
                 raise NotImplementedError(f'More than one of {trait} found.')
 
