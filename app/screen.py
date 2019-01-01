@@ -297,12 +297,15 @@ class Screen:
         return traits
 
     def get_interests(self, image: np.array):
+        """ Get interests of duplicant from image. """
 
         interests = []
 
+        roi = image[260:320, 240:450]  # Interests box is at (240,260) to (450,320).
+
         for interest, template in self.interest_templates.items():
 
-            matches = self.find_image(image, template, threshold=0.9)
+            matches = self.find_image(roi, template, threshold=0.9)
 
             if len(matches) == 1:
                 interests.append(interest)
