@@ -98,9 +98,9 @@ class Screen:
             'research': cv2.imread(f'{DIR}interests/research.png', 0),
             'tidy': cv2.imread(f'{DIR}interests/tidy.png', 0)
         }
-        
+
         time.sleep(5)  # Time to tab out to ONI.
-        
+
         self.frame = self.take_screenshot()
 
         self.boxes = None
@@ -199,22 +199,33 @@ class Screen:
         """ Return dict of attribute: value for attributes from array of dupe box. """
 
         attributes = {}
-        attribute_coords = {}
 
-        for attribute, template in self.attr_templates.items():
+        # 1080p coordinates:
+        # athletics: (165, 85)
+        # construction: (307, 85)
+        # cooking: (157, 105)
+        # creativity: (315, 105)
+        # digging: (165, 125)
+        # farming: (315, 125)
+        # kindness: (157, 145)
+        # learning: (307, 145)
+        # ranching: (157, 165)
+        # strength: (307, 165)
+        # tinkering: (157, 185)
 
-            results = cv2.matchTemplate(
-                image, template, cv2.TM_CCOEFF_NORMED)
-            _, _, _, max_loc = cv2.minMaxLoc(results)
-
-            x, y = max_loc
-
-            x = round(x/50)  # Introduce room for error.
-            y = round(y/15)
-
-            attribute_coords[(x, y)] = attribute
-
-            logger.info(f'Found {attribute} at {(x, y)}.')
+        attribute_coords = {
+            (3, 6): 'athletics', 
+            (6, 6): 'construction',
+            (3, 7): 'cooking', 
+            (6, 7): 'creativity', 
+            (3, 8): 'digging', 
+            (6, 8): 'farming', 
+            (3, 10): 'kindness', 
+            (6, 10): 'learning', 
+            (3, 11): 'ranching', 
+            (6, 11): 'strength', 
+            (3, 12): 'tinkering'
+        }
 
         threshold = 0.7
         for number, template in self.number_templates.items():
@@ -265,9 +276,9 @@ class Screen:
 
             if len(matches) == 1:
 
-                if trait in {'buff', 'caregiver', "diver's lungs", 'early bird', 'germ resistant', 
-                    'gourmet', 'grease monkey', 'interior decorator', 'iron gut', 'mole hands', 
-                    'night owl', 'quick learner', 'simple tastes', 'twinkletoes', 'uncultured'}:
+                if trait in {'buff', 'caregiver', "diver's lungs", 'early bird', 'germ resistant',
+                             'gourmet', 'grease monkey', 'interior decorator', 'iron gut', 'mole hands',
+                             'night owl', 'quick learner', 'simple tastes', 'twinkletoes', 'uncultured'}:
                     traits['positive'].append(trait)
                 else:
                     traits['negative'].append(trait)
@@ -393,25 +404,25 @@ class Screen:
 
         return True
 
-    def load_config(self, name): 
-        """ Return duplicant configuration from file name. """ 
-        
-        if not name.endswith('.json'):  # GUI should return full file path. 
+    def load_config(self, name):
+        """ Return duplicant configuration from file name. """
+
+        if not name.endswith('.json'):  # GUI should return full file path.
 
             DIR = 'duplicants/'
             name = os.path.join(DIR, name + '.json')
 
-        operators = {'>': operator.gt, '<': operator.lt, '>=': operator.ge, '<=': operator.le, '=':operator.eq}
+        operators = {'>': operator.gt, '<': operator.lt,
+                     '>=': operator.ge, '<=': operator.le, '=': operator.eq}
 
-        with open(name, 'r') as f: 
+        with open(name, 'r') as f:
             config = json.load(f)
-        
-        for attribute, (op, value) in config['attributes'].items(): 
+
+        for attribute, (op, value) in config['attributes'].items():
 
             config['attributes'][attribute] = (operators[op], value)
-        
-        return config
 
+        return config
 
     def run(self, dupe, config: str):
         """ Run program with config. Takes in a template name as config. """
@@ -440,7 +451,7 @@ class Screen:
                 self.click_shuffle_button(dupe)
                 dupes += 1
 
-        self.dupe += 1  
+        self.dupe += 1
         end = time.time()
 
         logger.debug(f'Took {end-start} seconds to run {dupes} duplicants.')
@@ -458,7 +469,9 @@ if __name__ == "__main__":
 
     s = Screen()
     time.sleep(5)
+    s.boxes = s.get_duplicant_box()
     ss = s.take_screenshot_dupe(0)
-    
-    # print(s.get_interests(ss))
-    # s.run(0, config)
+    helpers.display_image(ss)
+
+    with open('test-dupe-2.pkl', 'wb') as f:
+        pickle.dump(ss, f)
