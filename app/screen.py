@@ -201,39 +201,32 @@ class Screen:
         """ Return dict of attribute: value for attributes from array of dupe box. """
 
         attributes = {}
+        attribute_coords = {}
 
-        # 1080p coordinates:
-        # athletics: (165, 85)
-        # construction: (307, 85)
-        # cooking: (157, 105)
-        # creativity: (315, 105)
-        # digging: (165, 125)
-        # farming: (315, 125)
-        # kindness: (157, 145)
-        # learning: (307, 145)
-        # ranching: (157, 165)
-        # strength: (307, 165)
-        # tinkering: (157, 185)
+        # Attributes box is from (140, 80) to (450, 200)
+        roi = image[80:210, 140:450]
 
-        attribute_coords = {
-            (3, 6): 'athletics',
-            (6, 6): 'construction',
-            (3, 7): 'cooking',
-            (6, 7): 'creativity',
-            (3, 8): 'digging',
-            (6, 8): 'farming',
-            (3, 10): 'kindness',
-            (6, 10): 'learning',
-            (3, 11): 'ranching',
-            (6, 11): 'strength',
-            (3, 12): 'tinkering'
-        }
+        for attribute, template in self.attr_templates.items():
+
+            results = cv2.matchTemplate(
+                roi, template, cv2.TM_CCOEFF_NORMED)
+            _, _, _, max_loc = cv2.minMaxLoc(results)
+
+            x, y = max_loc
+
+            x = round(x/100)  # Introduce room for error.
+            y = round(y/20)
+
+            attribute_coords[(x, y)] = attribute
+
+            logger.info(f'Found {attribute} at {(x, y)}.')
 
         threshold = 0.7
+
         for number, template in self.number_templates.items():
 
             matches = cv2.matchTemplate(
-                image, template, cv2.TM_CCOEFF_NORMED)
+                roi, template, cv2.TM_CCOEFF_NORMED)
             locations = np.where(matches >= threshold)
             xs = locations[1]
             ys = locations[0]
@@ -244,8 +237,8 @@ class Screen:
 
                 logger.info(f'Found {number} at {(x, y)} with value {value}.')
 
-                x = round(x/50)  # Match error function above.
-                y = round(y/15)
+                x = round(x/100)  # Match error function above.
+                y = round(y/20)
 
                 if (x, y) in attribute_coords:
 
@@ -283,7 +276,7 @@ class Screen:
                 break  # Duplicant can only have one positive trait.
             elif len(matches) >= 1:
                 raise NotImplementedError(f'More than one of {trait} found.')
-        
+
         for trait, template in self.negative_trait_templates.items():
 
             matches = self.find_image(roi, template, threshold=0.9)
@@ -301,7 +294,8 @@ class Screen:
 
         interests = []
 
-        roi = image[260:320, 240:450]  # Interests box is at (240,260) to (450,320).
+        # Interests box is at (240,260) to (450,320).
+        roi = image[260:320, 240:450]
 
         for interest, template in self.interest_templates.items():
 
