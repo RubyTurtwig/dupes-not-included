@@ -10,6 +10,7 @@ Shuffle duplicants until it finds one that meets a specified criteria!
 4. Run main.py with python.
 5. Select the json file created in 2, and then click the duplicant number to shuffle. 
 6. Click run, and immediately tab out to ONI. The program should start shuffling in a few seconds. 
+7. To stop the program running prematurely, move your cursor to the top-left corner of the screen.
 
 # JSON Format
 The json file must be in the following format: 
