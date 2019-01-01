@@ -272,9 +272,11 @@ class Screen:
 
         traits = {}
 
+        roi = image[260:300, 15:230]  # Traits box is at (15,260) to (230,300).
+
         for trait, template in self.positive_trait_templates.items():
 
-            matches = self.find_image(image, template, threshold=0.9)
+            matches = self.find_image(roi, template, threshold=0.9)
 
             if len(matches) == 1:
                 traits['positive'] = [trait]
@@ -284,7 +286,7 @@ class Screen:
         
         for trait, template in self.negative_trait_templates.items():
 
-            matches = self.find_image(image, template, threshold=0.9)
+            matches = self.find_image(roi, template, threshold=0.9)
 
             if len(matches) == 1:
                 traits['negative'] = [trait]
